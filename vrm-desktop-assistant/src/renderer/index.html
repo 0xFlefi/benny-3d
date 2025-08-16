@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VRM Desktop Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- VRM Display Container -->
+        <div id="vrm-container">
+            <canvas id="vrm-canvas"></canvas>
+            
+        </div>
+
+        <!-- Chat Interface -->
+        <div id="chat-container" class="chat-hidden">
+            <div id="chat-header">
+                <div class="chat-title">Chat with Assistant</div>
+                <div class="chat-controls">
+                    <button id="settings-btn" class="control-btn" title="Settings">⚙️</button>
+                    <button id="minimize-chat-btn" class="control-btn" title="Minimize">➖</button>
+                </div>
+            </div>
+            
+            <div id="chat-messages" class="chat-messages"></div>
+            
+            <div id="chat-input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="chat-input" 
+                        placeholder="Type your message..." 
+                        rows="1"
+                        maxlength="2000"
+                    ></textarea>
+                    <button id="send-btn" class="send-button" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-info">
+                    <span id="char-count">0/2000</span>
+                    <span id="typing-indicator" style="display: none;">Assistant is typing...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Info Panel -->
+        <div id="character-info" class="character-info">
+            <div class="character-name">Assistant</div>
+            <div class="character-status">Ready</div>
+        </div>
+
+        <!-- Interaction Overlay -->
+        <div id="interaction-overlay" class="interaction-overlay">
+            <div class="interaction-hint">Click to chat</div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <!-- Load Three.js and VRM from npm using modules -->
+    <script type="module">
+        // Import THREE.js from npm
+        import * as THREE from '../../node_modules/three/build/three.module.js';
+        window.THREE = THREE;
+        console.log('THREE.js loaded from npm module:', THREE.REVISION);
+        
+        // Import GLTFLoader from npm
+        import { GLTFLoader } from '../../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+        window.GLTFLoader = GLTFLoader;
+        THREE.GLTFLoader = GLTFLoader;
+        console.log('GLTFLoader loaded from npm');
+        
+        // Import VRM loader from npm
+        import { VRMLoaderPlugin, VRMUtils } from '../../node_modules/@pixiv/three-vrm/lib/three-vrm.module.js';
+        window.VRMLoaderPlugin = VRMLoaderPlugin;
+        window.VRMUtils = VRMUtils;
+        window.THREE_VRM = { VRMLoaderPlugin, VRMUtils };
+        console.log('VRM loader loaded from npm');
+        
+        window.dispatchEvent(new Event('libraries-loaded'));
+    </script>
+    
+    <!-- Fallback for module loading issues -->
+    <script>
+        setTimeout(() => {
+            if (typeof THREE === 'undefined') {
+                console.log('Module loading failed, using fallback...');
+                const script = document.createElement('script');
+                script.src = '../../assets/three.js';
+                script.onload = () => {
+                    console.log('THREE.js fallback loaded');
+                    window.dispatchEvent(new Event('libraries-loaded'));
+                };
+                document.head.appendChild(script);
+            }
+        }, 1000);
+    </script>
+    
+    <script>
+        // Debug: Check what's available after loading libraries
+        console.log('THREE available:', typeof THREE !== 'undefined');
+        console.log('Available VRM globals:', Object.keys(window).filter(key => key.includes('VRM')));
+        
+        // Make sure VRM classes are accessible
+        if (typeof THREE !== 'undefined') {
+            console.log('THREE.js version:', THREE.REVISION);
+            console.log('THREE.GLTFLoader available:', typeof THREE.GLTFLoader !== 'undefined');
+            
+            // Import GLTFLoader if not available
+            if (!THREE.GLTFLoader && typeof window.GLTFLoader !== 'undefined') {
+                THREE.GLTFLoader = window.GLTFLoader;
+                console.log('GLTFLoader imported from window');
+            }
+            
+            // Try to import from node_modules if available
+            if (!THREE.GLTFLoader) {
+                try {
+                    // Try to load GLTFLoader from Three.js examples
+                    const script = document.createElement('script');
+                    script.src = '../../node_modules/three/examples/js/loaders/GLTFLoader.js';
+                    script.onload = () => {
+                        console.log('GLTFLoader loaded from Three.js examples');
+                    };
+                    script.onerror = () => {
+                        console.warn('Could not load GLTFLoader from Three.js examples');
+                    };
+                    document.head.appendChild(script);
+                } catch (error) {
+                    console.warn('Error loading GLTFLoader:', error);
+                }
+            }
+        }
+        
+        // Check VRM availability
+        if (typeof window.VRMLoaderPlugin !== 'undefined') {
+            console.log('VRM Loader Plugin available');
+            window.VRM = { VRMLoaderPlugin: window.VRMLoaderPlugin };
+        } else if (typeof window.THREE_VRM !== 'undefined') {
+            console.log('THREE_VRM available');
+            window.VRM = window.THREE_VRM;
+        } else {
+            console.warn('VRM loader not found - will try npm modules');
+        }
+    </script>
+    <script src="vrm-renderer.js"></script>
+    <script src="chat-manager.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

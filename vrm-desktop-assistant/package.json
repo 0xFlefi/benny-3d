@@ -1,0 +1,56 @@
+{
+  "name": "vrm-desktop-assistant",
+  "version": "1.0.0",
+  "description": "A desktop VRM character assistant with AI chat capabilities",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build-mac": "electron-builder --mac",
+    "dist": "npm run build"
+  },
+  "keywords": [
+    "vrm",
+    "desktop",
+    "assistant",
+    "ai",
+    "chat",
+    "electron"
+  ],
+  "author": "VRM Assistant Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "electron-reload": "^2.0.0-alpha.1"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm": "^2.1.3",
+    "axios": "^1.6.2",
+    "electron-store": "^8.1.0",
+    "three": "^0.164.1"
+  },
+  "build": {
+    "appId": "com.vrmassistant.desktop",
+    "productName": "VRM Desktop Assistant",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

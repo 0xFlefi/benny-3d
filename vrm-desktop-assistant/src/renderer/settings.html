@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VRM Assistant - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-y: auto;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .settings-container {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .settings-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group input[type="password"] {
+            font-family: monospace;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 4px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .range-group {
+            margin-bottom: 15px;
+        }
+
+        .range-group input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .range-value {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .section {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #667eea;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <div class="settings-header">
+            <h1>⚙️ Settings</h1>
+            <p>Configure your VRM Desktop Assistant</p>
+        </div>
+
+        <div class="success-message" id="success-message">
+            Settings saved successfully!
+        </div>
+
+        <form id="settings-form">
+            <!-- API Configuration -->
+            <div class="section">
+                <div class="section-title">🤖 AI Configuration</div>
+                
+                <div class="form-group">
+                    <label for="api-provider">AI Provider</label>
+                    <select id="api-provider" name="apiProvider">
+                        <option value="openai">OpenAI</option>
+                        <option value="openrouter">OpenRouter</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="openai-key-group">
+                    <label for="openai-key">OpenAI API Key</label>
+                    <input type="password" id="openai-key" name="openaiApiKey" placeholder="sk-...">
+                    <small>Get your API key from <a href="#" onclick="openExternal('https://platform.openai.com/api-keys')">OpenAI Platform</a></small>
+                </div>
+
+                <div class="form-group" id="openrouter-key-group" style="display: none;">
+                    <label for="openrouter-key">OpenRouter API Key</label>
+                    <input type="password" id="openrouter-key" name="openrouterApiKey" placeholder="sk-or-...">
+                    <small>Get your API key from <a href="#" onclick="openExternal('https://openrouter.ai/keys')">OpenRouter</a></small>
+                </div>
+            </div>
+
+            <!-- Appearance Settings -->
+            <div class="section">
+                <div class="section-title">🎨 Appearance</div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="always-on-top" name="alwaysOnTop">
+                    <label for="always-on-top">Always on top</label>
+                </div>
+
+                <div class="range-group">
+                    <label>Transparency</label>
+                    <input type="range" id="transparency" name="transparency" min="0.3" max="1" step="0.1" value="0.9">
+                    <div class="range-value" id="transparency-value">90%</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="chat-position">Chat Position</label>
+                    <select id="chat-position" name="chatPosition">
+                        <option value="right">Right</option>
+                        <option value="left">Left</option>
+                        <option value="top">Top</option>
+                        <option value="bottom">Bottom</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="window.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Load current settings
+        async function loadSettings() {
+            try {
+                const settings = await window.electronAPI.getAllSettings();
+                
+                // API settings
+                document.getElementById('openai-key').value = settings.openaiApiKey || '';
+                document.getElementById('openrouter-key').value = settings.openrouterApiKey || '';
+                document.getElementById('api-provider').value = settings.apiProvider || 'openai';
+                
+                // Appearance settings
+                document.getElementById('always-on-top').checked = settings.alwaysOnTop ?? true;
+                document.getElementById('transparency').value = settings.transparency || 0.9;
+                document.getElementById('chat-position').value = settings.chatPosition || 'right';
+                
+                updateProviderFields();
+                updateTransparencyValue();
+                
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+            }
+        }
+
+        // Update provider-specific fields
+        function updateProviderFields() {
+            const provider = document.getElementById('api-provider').value;
+            const openaiGroup = document.getElementById('openai-key-group');
+            const openrouterGroup = document.getElementById('openrouter-key-group');
+            
+            if (provider === 'openai') {
+                openaiGroup.style.display = 'block';
+                openrouterGroup.style.display = 'none';
+            } else {
+                openaiGroup.style.display = 'none';
+                openrouterGroup.style.display = 'block';
+            }
+        }
+
+        // Update transparency value display
+        function updateTransparencyValue() {
+            const value = document.getElementById('transparency').value;
+            document.getElementById('transparency-value').textContent = Math.round(value * 100) + '%';
+        }
+
+        // Save settings
+        async function saveSettings(formData) {
+            try {
+                const provider = formData.get('apiProvider');
+                
+                // Clear both API keys first
+                await window.electronAPI.setSetting('openaiApiKey', '');
+                await window.electronAPI.setSetting('openrouterApiKey', '');
+                
+                // Save the selected provider's API key
+                if (provider === 'openrouter') {
+                    const openrouterKey = formData.get('openrouterApiKey');
+                    if (openrouterKey && openrouterKey.trim()) {
+                        await window.electronAPI.setSetting('openrouterApiKey', openrouterKey.trim());
+                    }
+                } else {
+                    const openaiKey = formData.get('openaiApiKey');
+                    if (openaiKey && openaiKey.trim()) {
+                        await window.electronAPI.setSetting('openaiApiKey', openaiKey.trim());
+                    }
+                }
+                
+                // Save other settings
+                for (const [key, value] of formData.entries()) {
+                    if (key === 'openaiApiKey' || key === 'openrouterApiKey') continue; // Already handled
+                    
+                    let processedValue = value;
+                    
+                    // Convert certain values
+                    if (key === 'alwaysOnTop') {
+                        processedValue = value === 'on';
+                    } else if (key === 'transparency') {
+                        processedValue = parseFloat(value);
+                    }
+                    
+                    await window.electronAPI.setSetting(key, processedValue);
+                }
+                
+                console.log('Settings saved successfully');
+                
+                // Show success message
+                const successMsg = document.getElementById('success-message');
+                successMsg.style.display = 'block';
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Failed to save settings:', error);
+                alert('Failed to save settings. Please try again.');
+            }
+        }
+
+        // Open external links
+        function openExternal(url) {
+            window.electronAPI.openExternal(url);
+        }
+
+        // Event listeners
+        document.getElementById('api-provider').addEventListener('change', updateProviderFields);
+        document.getElementById('transparency').addEventListener('input', updateTransparencyValue);
+
+        document.getElementById('settings-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            await saveSettings(formData);
+        });
+
+        // Load settings on page load
+        window.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+</body>
+</html>
